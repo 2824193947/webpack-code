@@ -28,12 +28,17 @@ const DepRelation: DepRelation = {}
 // 将入口文件传入到函数中
 collectionCodeAndDeps(resolve(projectRoot, 'index.js'))
 
-console.log(DepRelation);
-
+console.log("~ DepRelation", DepRelation)
 
 function collectionCodeAndDeps(failPath: string) {
   // 文件的项目
   const key = getProjectPath(failPath)
+  /**
+   * 解决循环依赖(DepRelation的key是所有index（索引）到的文件)
+   */
+  if (Object.keys(DepRelation).includes(key)) {
+    return
+  }
   // 获取文件内容
   const code = readFileSync(failPath).toString()
   // 初始化 depRealation[key]
@@ -42,7 +47,7 @@ function collectionCodeAndDeps(failPath: string) {
   const ast = parse(code, {sourceType: 'module'})
   // 分析遍历
   traverse(ast, {
-    enter: item => {
+    enter: item => { 
       if (item.node.type === 'ImportDeclaration') {
         // item.node.source.value 是一个相对路径 如: ./a.js
         const depAbsoutePath = resolve(dirname(failPath), item.node.source.value)
@@ -51,7 +56,9 @@ function collectionCodeAndDeps(failPath: string) {
         const depProjectPath = getProjectPath(depAbsoutePath)
         // 将依赖装入DepRelation
         DepRelation[key].deps.push(depProjectPath)
-        // ***这句代码是为了解决嵌套依赖***
+        /**
+         * 解决嵌套依赖
+         */
         collectionCodeAndDeps(depAbsoutePath)
       }
     }
