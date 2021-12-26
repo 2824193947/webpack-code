@@ -89,8 +89,3 @@ function collectionCodeAndDeps(failPath: string) {
 function getProjectPath(path: string) {
   return relative(projectRoot, path).replace(/\\/g, '/')
 } 
-
-export {
-  depRelation,
-  collectionCodeAndDeps
-}
