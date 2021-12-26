@@ -47,8 +47,8 @@ function generatorCode() {
       }
     }`
   }).join(',') + '];\n'
-  code += 'var moudel = {}\n'
-  code += 'execute(depRlation[0].key)\n'
+  code += 'var moudles = {}\n'
+  code += 'execute(depRelation[0].key)\n'
   code += `
     function execute(key) {
       if (moudles[key]) { return moudles[key]}

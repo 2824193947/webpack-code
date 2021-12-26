@@ -47,8 +47,8 @@ function generatorCode() {
       }
     }`
   }).join(',') + '];\n'
-  code += 'var moudel = {}\n'
-  code += 'execute(depRlation[0].key)\n'
+  code += 'var moudles = {}\n'
+  code += 'execute(depRelation[0].key)\n'
   code += `
     function execute(key) {
       if (moudles[key]) { return moudles[key]}
@@ -87,9 +87,7 @@ function collectionCodeAndDeps(failPath: string) {
   * 这里是我们本次文件新加的处理css文件代码
   */
   if (/\.css$/.test(failPath)) {
-    code = `
-      const str = ${JSON.stringify(code)}
-    `
+    code = require('./loader/css-loader.js')(code)
   }
   // 转换为es5(本次改动点)
   const { code: es5Code }: any = babel.transform(code, {
