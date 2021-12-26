@@ -15,7 +15,7 @@
 
 
  // 当前目录
- const projectRoot = resolve(__dirname, 'project_2')
+ const projectRoot = resolve(__dirname, 'project_3')
  
  // 类型声明
  /**
