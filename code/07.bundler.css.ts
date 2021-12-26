@@ -71,17 +71,26 @@ function generatorCode() {
   return code
 }
 
+// 打包器
 function collectionCodeAndDeps(failPath: string) {
   // 文件的项目
   const key = getProjectPath(failPath)
   /**
-  * 解决循环依赖(DepRelation的key是所有index（索引）到的文件)
-  */
+ * 解决循环依赖(DepRelation的key是所有index（索引）到的文件)
+ */
   if (depRelation.find(i => i.key === key)) {
     return
   }
   // 获取文件内容
-  const code = readFileSync(failPath).toString()
+  let code = readFileSync(failPath).toString()
+  /**
+  * 这里是我们本次文件新加的处理css文件代码
+  */
+  if (/\.css$/.test(failPath)) {
+    code = `
+      const str = ${JSON.stringify(code)}
+    `
+  }
   // 转换为es5(本次改动点)
   const { code: es5Code }: any = babel.transform(code, {
     presets: ['@babel/preset-env']
@@ -106,8 +115,8 @@ function collectionCodeAndDeps(failPath: string) {
         // 将依赖装入DepRelation
         item.deps.push(depProjectPath)
         /**
-        * 解决嵌套依赖
-        */
+       * 解决嵌套依赖
+       */
         collectionCodeAndDeps(depAbsoutePath)
       }
     }
