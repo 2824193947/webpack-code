@@ -1,28 +1,17 @@
 /**
- * 本次解决问题：
- * 1. 打包为dist文件, dist文件就是将所有文件包含在内, 
- * 2. 不在需要像index.js需要依赖其他文件, 而在dist文件中式全部包含所有文件的, 
- * 3. 然后执行所有模块, 所有文件放到一个文件,再执行, 这个就是打包bundel
- * 运行 ts-node code/04.bundle.ts
+ * 运行 ts-node code/06.bundleFile.ts
  */
+import { writeFileSync, writevSync } from "fs"
+import { resolve, relative, dirname, join } from 'path';
+import { mkdir } from 'shelljs'
 import * as babel from '@babel/core';
 import { parse } from "@babel/parser";
 import traverse from '@babel/traverse'
 import { readFileSync } from 'fs'
-// resolve 拼接路径  /Users/didi/Desktop/test/webpack-code/project_2/index.js
-// relative 得到最后  index.js
-// dirname 得到前面的路径  /Users/didi/Desktop/test/webpack-code/project_2
-import { resolve, relative, dirname } from 'path';
 
-// 当前目录
-const projectRoot = resolve(__dirname, 'project_3')
+const projectName = 'project_3'
+const projectRoot = resolve(__dirname, projectName)
 
-// 类型声明
-/**
-* key 代表文件
-* deps 存储文件中依赖文件
-* code 存储代码
-*/
 type DepRelation = {
   key: string,
   deps: string[],
@@ -30,19 +19,59 @@ type DepRelation = {
 }[]
 
 type Item = {
-key: string,
-deps: string[],
-code: string
+  key: string,
+  deps: string[],
+  code: string
 }
 
 // 初始化手机依赖的数组
+// 类型声明
+// 将入口文件的绝对路径传入函数，如 D://faiel/index.js
 const depRelation: DepRelation = []
-
-// 将入口文件传入到函数中
 collectionCodeAndDeps(resolve(projectRoot, 'index.js'))
+console.log("~ depRelation", depRelation)
 
-console.log("~ DepRelation", depRelation)
+const dir = `${projectName}/dist`
+mkdir('-p', dir)
+writeFileSync(join(dir, 'dist.js'), generatorCode())
 
+function generatorCode() {
+  let code = ''
+  code += 'var depRelation = [' + depRelation.map(item => {
+    const { key,deps, code } = item
+    return `{
+      key: ${JSON.stringify(key)},
+      deps: ${JSON.stringify(deps)},
+      code: function(require, moudle, exports) {
+        ${code}
+      }
+    }`
+  }).join(',') + '];\n'
+  code += 'var moudles = {}\n'
+  code += 'execute(depRelation[0].key)\n'
+  code += `
+    function execute(key) {
+      if (moudles[key]) { return moudles[key]}
+      var item = depRelation.find(i => i.key === key)
+      if (!item) { throw new Error(\`\${item} is not found\`) }
+      var pathToley = (path) => {
+        var dirname = key.substring(0, key.lastIndexOf('/') + 1)
+        var projectPath = (dirname + path).replace(\/\\.\\\/\/g, '').replace(\/\\\/\\\/\/, '/')
+        return projectPath
+      }
+      var require = (path) => {
+        return execute(pathToley(path))
+      }
+      moudles[key] = { __esModule: true }
+      var moudle = { exports: moudles[key]}
+      item.code(require, moudle, moudle.exports)
+      return moudles[key]
+    }
+  `
+  return code
+}
+
+// 打包器
 function collectionCodeAndDeps(failPath: string) {
   // 文件的项目
   const key = getProjectPath(failPath)
