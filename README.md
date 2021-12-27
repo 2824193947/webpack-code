@@ -1,4 +1,6 @@
 # webpack源码学习
+# 利用node, 通过浏览器调试代码:
+eg: node --inspect-brk ./node_modules/webpack-cli/bin/cli.js
 ## 01 转换代码
 
 ## 02 找出依赖文件 解决嵌套依赖 解决循环依赖
