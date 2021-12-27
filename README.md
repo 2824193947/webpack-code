@@ -13,16 +13,6 @@
 - 那么这里发现只可以解决打包js文件，css呢？ 那么就是去将css转化为js，那么就可以加载了
 - 我们建立了一个loader的文件夹，实现了css-loader，就是将css，变为js引入
 
-
-不用 "${code}" 用 JSON.stringify(code) 是因为JSON.stringify会对一些回车 空格进行转译，不然会语法错误
-
-可以看下控制台输出对比
- consoloe.log("* {
-    |                ^
-  3 |  color: red
-  4 | }")
-  5 |  const str = "* {\n color: red\n}"
-
 ## 08 对前面的loader进行优化 loader2（单一职责原则）
 - webpack 里每个loader只做一件事情 现在loader文件中做了两件事 1.转字符串 和 2.代码扔到dom中
 - 目前我的loader做了两件事

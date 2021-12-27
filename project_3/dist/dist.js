@@ -69,13 +69,9 @@ exports["default"] = _default;
       code: function(require, moudle, exports) {
         "use strict";
 
-console.log("* {\n color: red\n}");
-console.log(code);
-var str = "* {\n color: red\n}";
-
 if (document) {
   var style = document.createElement('style');
-  style.innerHTML = str;
+  style.innerHTML = "* {\n color: red\n}";
   document.head.appendChild(style);
   module.exports = str;
 }
