@@ -72,8 +72,7 @@
      enter: path => {
        if (path.node.type === 'ImportDeclaration') {
          // item.node.source.value 是一个相对路径 如: ./a.js
-         const depAbsoutePath = resolve(dirname(failPath), path.node.source.value)
-          
+         const depAbsoutePath = resolve(dirname(failPath), path.node.source.value)          
          // 然后转译为项目路径
          const depProjectPath = getProjectPath(depAbsoutePath)
          // 将依赖装入DepRelation
@@ -86,7 +85,7 @@
      }
    })
  }
- 
+ // 获取路径
  function getProjectPath(path: string) {
    return relative(projectRoot, path).replace(/\\/g, '/')
  } 
