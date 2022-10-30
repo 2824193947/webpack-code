@@ -30,9 +30,9 @@ type DepRelation = {
 }[]
 
 type Item = {
-key: string,
-deps: string[],
-code: string
+  key: string,
+  deps: string[],
+  code: string
 }
 
 // 初始化手机依赖的数组

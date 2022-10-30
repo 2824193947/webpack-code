@@ -21,8 +21,7 @@
     "@babel/core": "^7.16.5",
     "@babel/parser": "^7.16.6",
     "@babel/traverse": "^7.16.5",
-    "fs": "^0.0.1-security",
-    "shelljs": "^0.8.4"
+    "fs": "^0.0.1-security"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.5",
