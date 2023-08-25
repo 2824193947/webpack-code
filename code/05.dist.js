@@ -52,7 +52,7 @@ var depRelation = [
       Object.defineProperty(exports, "__esModule", {
         value: true
       })
-      exports["default"] = void 0;
+      exports["default"] = void 0
       // 这里就是bable转译的代码，inport转化为require  _interopRequireDefault是为了做转化
       var _a = _interopRequireDefault(require("./a.js"))
       // _interopRequireDefault的作用就是判断require的模块是否是已经被babel编译过的模块，如果是，则当前require的引用一定存在一个default属性；否则为他加一个default属性，这样便不会调用模块的default为undefined的情况了
@@ -70,11 +70,13 @@ var depRelation = [
   }
 ]
 var moudles = {}
+
 execute(depRelation[0].key)
+
 function execute(key) {
   // 缓存 如果已经 require 过，直接返回上次的结果
   if (moudles[key]) { return moudles[key] }
-  // 找到要执行的项目
+  // 在dist文件里找到依赖要执行的文件代码
   var item = depRelation.find(i => i.key === key)
   // 找不到就报错，中断执行
   if (!item) { throw new Error(`${item} is not found`) }

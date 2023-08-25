@@ -31,7 +31,7 @@ const depRelation: DepRelation = [];
 collectionCodeAndDeps(resolve(projectRoot, "index.js"));
 console.log("~ depRelation", depRelation);
 
-const dir = `${projectName}/dist`;
+const dir = `../${projectName}_plugin_dist`;
 mkdir("-p", dir);
 writeFileSync(join(dir, "dist.js"), generatorCode());
 
@@ -68,7 +68,7 @@ function generatorCode() {
         return execute(pathToley(path))
       }
       moudles[key] = { __esModule: true }
-      var moudle = { exports: moudles[key]}
+      var moudle = { exports: moudles[key] }
       item.code(require, moudle, moudle.exports)
       return moudles[key]
     }
